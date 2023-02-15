@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM adoptopenjdk/openjdk11:jre
 
 # Docker labels.
 LABEL maintainer "Halim Qarroum <hqm.post@gmail.com>"

@@ -1,0 +1,7 @@
+language: ruby
+
+services:
+  - docker
+
+script:
+  - docker build -t android-emulator .

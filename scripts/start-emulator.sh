@@ -31,16 +31,11 @@ wait_for_boot &
 
 # Start the emulator with no audio, no GUI, and no snapshots.
 echo "Starting the emulator ..."
-if emulator \
+emulator \
   -avd android \
   -noaudio \
   -no-boot-anim \
   -no-window \
   -no-snapshot-save \
   -qemu \
-  -enable-kvm;
-then
-  update_state "stopped"
-else 
-  update_state "stopped"
-fi
+  -enable-kvm || update_state "stopped"

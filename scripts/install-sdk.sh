@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -e
+
 # If the installation flag of the Android SDK is set
 # we download the Android command-line tools,
 # install the SDK, platform tools and the emulator.

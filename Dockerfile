@@ -10,23 +10,24 @@ LABEL version "1.0.0"
 COPY deps/redir/redir.c /usr/src/redir.c
 
 # Installing required packages.
-RUN apk update && \
-	apk upgrade && \
-	apk add --no-cache \
-		alpine-sdk \
+RUN apt update --yes && \
+	apt upgrade --yes && \
+	apt install --yes \
+		build-essential \
 		bash \
 		unzip \
 		wget \
-		libvirt-daemon \
-		dbus \
-		polkit \
-		virt-manager && \
+		libvirt-daemon-system \
+		libvirt-clients \
+		bridge-utils && \
 	# Compile `redir`.
 	gcc /usr/src/redir.c -o /usr/bin/redir && \
 	strip /usr/bin/redir && \
-	# Cleanup APK.
-	apk del alpine-sdk && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apk/*
+	# Cleanup APT.
+	apt remove build-essential --yes && \
+	apt clean autoclean --yes && \
+	apt autoremove --yes && \
+	rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 # Arguments that can be overriden at build-time.
 ARG INSTALL_ANDROID_SDK=1

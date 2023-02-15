@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:jre
+FROM adoptopenjdk/openjdk11:alpine-jre
 
 # Docker labels.
 LABEL maintainer "Halim Qarroum <hqm.post@gmail.com>"
@@ -10,24 +10,23 @@ LABEL version "1.0.0"
 COPY deps/redir/redir.c /usr/src/redir.c
 
 # Installing required packages.
-RUN apt update --yes && \
-	apt upgrade --yes && \
-	apt install --yes \
-		build-essential \
+RUN apk update && \
+	apk upgrade && \
+	apk add --no-cache \
+		alpine-sdk \
 		bash \
 		unzip \
 		wget \
-		libvirt-daemon-system \
-		libvirt-clients \
-		bridge-utils && \
+		libvirt-daemon \
+		dbus \
+		polkit \
+		virt-manager && \
 	# Compile `redir`.
 	gcc /usr/src/redir.c -o /usr/bin/redir && \
 	strip /usr/bin/redir && \
-	# Cleanup APT.
-	apt remove build-essential --yes && \
-	apt clean autoclean --yes && \
-	apt autoremove --yes && \
-	rm -rf /var/lib/{apt,dpkg,cache,log}/
+	# Cleanup APK.
+	apk del alpine-sdk && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apk/*
 
 # Arguments that can be overriden at build-time.
 ARG INSTALL_ANDROID_SDK=1

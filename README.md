@@ -35,8 +35,9 @@ You can build this image without the Android SDK and without the Android emulato
 
 Variant                   |   Uncompressed   |  Compressed  |
 ------------------------- | ---------------- | ------------ |
-SDK 33 + Emulator         |      5.84 GB     |    1.97 GB   |
-SDK 28 + Emulator         |      4.29 GB     |    1.46 GB   |
+API 33 + Emulator         |      5.84 GB     |    1.97 GB   |
+API 32 + Emulator         |      5.89 GB     |    1.93 GB   |
+API 28 + Emulator         |      4.29 GB     |    1.46 GB   |
 Without SDK and emulator  |      414 MB      |    138 MB    |
 
 ## 📘 Usage

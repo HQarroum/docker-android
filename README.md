@@ -131,7 +131,7 @@ docker run -it --rm --device /dev/kvm -p 5555:5555 -v /shared/android/sdk:/opt/a
 
 ### Pull from Docker Hub
 
-Different pre-built images of `docker-android` exist on [Docker Hub](https://hub.docker.com/repository/docker/halimqarroum/docker-android/general). Each image variant is tagged using its the api level and image type. For example, to pull an API 33 image, you can run the following.
+Different pre-built images of `docker-android` exist on [Docker Hub](https://hub.docker.com/r/halimqarroum/docker-android). Each image variant is tagged using its the api level and image type. For example, to pull an API 33 image, you can run the following.
 
 ```bash
 docker pull halimqarroum/docker-android:api-33

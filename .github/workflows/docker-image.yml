@@ -12,12 +12,12 @@ on:
 
 jobs:
 
-  # Builds all Android API images with API level 30 and above.
-  build-api-30x:
+  # Builds all Android API images with API level 33 and below.
+  build-apis:
     strategy:
       matrix:
-        version: [33, 32, 31, 30]
-        image: ['google_apis', 'google_apis_playstore']
+        version: [33, 32, 31, 30, 29, 28]
+        image: [{ name: 'google_apis', suffix: '' }, { name: 'google_apis_playstore', suffix: '-playstore' }]
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -25,65 +25,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build Docker image with Android 33
+      - name: Build Docker image api-${{ matrix.version }}${{ matrix.image.suffix }}
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: halimqarroum/docker-android:api-33
+          tags: halimqarroum/docker-android:api-${{ matrix.version }}${{ matrix.image.suffix }}
           build-args: |
             API_LEVEL=${{ matrix.version }}
-            IMG_TYPE=${{ matrix.image }}
+            IMG_TYPE=${{ matrix.image.name }}
 
-  build-api-29:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build Docker image with Android 29
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: halimqarroum/docker-android:api-29
-          build-args: API_LEVEL=29
-
-  build-api-28:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build Docker image with Android 28
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: halimqarroum/docker-android:api-28
-          build-args: |
-            "API_LEVEL=28"
-            "ARCHITECTURE=x86"
-  
-  build-api-28-playstore:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build Docker image with Android 28 and the PlayStore
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: halimqarroum/docker-android:api-28-playstore
-          build-args: |
-            "API_LEVEL=28"
-            "ARCHITECTURE=x86"
-            "IMG_TYPE=google_apis_playstore"
-
+  # Builds a minimal image without any Android SDK images.
   build-minimal:
     runs-on: ubuntu-latest
     steps:

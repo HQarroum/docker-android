@@ -38,4 +38,4 @@ emulator \
   -no-window \
   -no-snapshot-save \
   -qemu \
-  -enable-kvm || update_state "stopped"
+  -enable-kvm || update_state "ANDROID_STOPPED"

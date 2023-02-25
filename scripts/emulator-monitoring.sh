@@ -16,7 +16,7 @@ function update_state() {
 # Waits for the emulator to boot and writes
 # state updates on the standard output.
 function wait_for_boot() {
-  update_state "booting"
+  update_state "ANDROID_BOOTING"
 
   # Waiting for the ADB server to start.
   while [ -n "$(adb wait-for-device > /dev/null)" ]; do
@@ -30,5 +30,5 @@ function wait_for_boot() {
     COMPLETED=$(adb shell getprop sys.boot_completed | tr -d '\r')
     sleep 5
   done
-  update_state "booted"
+  update_state "ANDROID_READY"
 }

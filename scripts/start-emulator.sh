@@ -22,8 +22,8 @@ export USER=root
 
 # Creating the Android Virtual Emulator.
 echo "Creating the Android Virtual Emulator ..."
-echo "Using '$PACKAGE_PATH' and '$ABI' for creating the emulator"
-echo no | avdmanager create avd -n android --abi "${ABI}" -k "$PACKAGE_PATH" --device "pixel"
+echo "Using package '$PACKAGE_PATH', ABI '$ABI' and device '$DEVICE_ID' for creating the emulator"
+echo no | avdmanager create avd -n android --abi "$ABI" -k "$PACKAGE_PATH" --device "$DEVICE_ID"
 
 # Asynchronously write updates on the standard output
 # about the state of the boot sequence.

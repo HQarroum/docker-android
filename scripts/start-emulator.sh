@@ -23,12 +23,18 @@ export USER=root
 # Creating the Android Virtual Emulator.
 echo "Creating the Android Virtual Emulator ..."
 echo "Using package '$PACKAGE_PATH', ABI '$ABI' and device '$DEVICE_ID' for creating the emulator"
-echo no | avdmanager create avd -f -n android --abi "$ABI" -k "$PACKAGE_PATH" --device "$DEVICE_ID"
+echo no | avdmanager create avd \
+  --force \
+  --name android \
+  --abi "$ABI" \
+  --package "$PACKAGE_PATH" \
+  --device "$DEVICE_ID"
 
 # If GPU acceleration is enabled, we create a virtual framebuffer
 # to be used by the emulator when running with GPU acceleration.
+# We also set the GPU mode to `host` to force the emulator to use
+# GPU acceleration.
 if [ "$GPU_ACCELERATED" == "true" ]; then
-  echo "Running with GPU acceleration enabled"
   export DISPLAY=":0.0"
   export GPU_MODE="host"
   Xvfb "$DISPLAY" -screen 0 1920x1080x16 -nolisten tcp &
@@ -48,4 +54,4 @@ emulator \
   -gpu "$GPU_MODE" \
   -no-boot-anim \
   -no-window \
-  -no-snapshot-save || update_state "ANDROID_STOPPED"
+  -no-snapshot || update_state "ANDROID_STOPPED"

@@ -1,32 +1,35 @@
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04
 
 # Docker labels.
 LABEL maintainer "Halim Qarroum <hqm.post@gmail.com>"
 LABEL description "A Docker image allowing to run an Android emulator"
-LABEL version "1.0.0"
+LABEL version "1.1.0"
 
 # `redir.c` will be used to redirect
 # localhost ADB ports to the container interface.
 COPY deps/redir/redir.c /usr/src/redir.c
 
 # Installing required packages.
-RUN apk update && \
-	apk upgrade && \
-	apk add --no-cache \
-		alpine-sdk \
-		bash \
-		unzip \
-		wget \
-		libvirt-daemon \
-		dbus \
-		polkit \
-		virt-manager && \
-	# Compile `redir`.
-	gcc /usr/src/redir.c -o /usr/bin/redir && \
-	strip /usr/bin/redir && \
-	# Cleanup APK.
-	apk del alpine-sdk && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apk/*
+RUN apt update -y && \
+    apt install -y --no-install-recommends \
+        build-essential \
+        bash \
+        unzip \
+        wget \
+        libvirt-daemon \
+        dbus \
+    		openjdk-11-jdk \
+    		ca-certificates-java \
+        virt-manager \
+        libvulkan1 \
+        xvfb \
+				libgl1-mesa-glx \
+        libgl1-mesa-dri \
+				iproute2 && \
+    # Compile `redir`.
+    gcc /usr/src/redir.c -o /usr/bin/redir && \
+    strip /usr/bin/redir && \
+		rm -rf /var/lib/apt/lists/*
 
 # Arguments that can be overriden at build-time.
 ARG INSTALL_ANDROID_SDK=1
@@ -35,7 +38,7 @@ ARG IMG_TYPE=google_apis
 ARG ARCHITECTURE=x86_64
 ARG CMD_LINE_VERSION=9477386_latest
 ARG DEVICE_ID=pixel
-ARG GPU_ACCELERATED=false
+ARG GPU_ACCELERATED=true
 
 # Environment variables.
 ENV ANDROID_SDK_ROOT=/opt/android \

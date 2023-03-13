@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - 'Dockerfile'
+      - 'Dockerfile.gpu'
       - '.github/workflows/*'
       - 'deps/*'
       - 'keys/*'
@@ -17,7 +18,14 @@ jobs:
     strategy:
       matrix:
         version: [33, 32, 31, 30, 29, 28]
-        image: [{ name: 'google_apis', suffix: '' }, { name: 'google_apis_playstore', suffix: '-playstore' }]
+        image: [
+          { name: 'google_apis', suffix: '' },
+          { name: 'google_apis_playstore', suffix: '-playstore' }
+        ]
+        gpu: [
+          { file: 'Dockerfile', suffix: '' },
+          { file: 'Dockerfile.gpu', suffix: '-cuda' }
+        ]
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -29,13 +37,20 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: halimqarroum/docker-android:api-${{ matrix.version }}${{ matrix.image.suffix }}
+          file: ${{ matrix.gpu.file }}
+          tags: halimqarroum/docker-android:api-${{ matrix.version }}${{ matrix.image.suffix }}${{ matrix.gpu.suffix }}
           build-args: |
             API_LEVEL=${{ matrix.version }}
             IMG_TYPE=${{ matrix.image.name }}
 
   # Builds a minimal image without any Android SDK images.
   build-minimal:
+    strategy:
+      matrix:
+        gpu: [
+          { file: 'Dockerfile', suffix: '' },
+          { file: 'Dockerfile.gpu', suffix: '-cuda' }
+        ]
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -47,5 +62,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: halimqarroum/docker-android:minimal
+          file: ${{ matrix.gpu.file }}
+          tags: halimqarroum/docker-android:minimal${{ matrix.gpu.suffix }}
           build-args: INSTALL_ANDROID_SDK=0

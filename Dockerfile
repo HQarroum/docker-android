@@ -38,7 +38,7 @@ ARG IMG_TYPE=google_apis
 ARG ARCHITECTURE=x86_64
 ARG CMD_LINE_VERSION=9477386_latest
 ARG DEVICE_ID=pixel
-ARG GPU_ACCELERATED=false
+ARG GPU_ACCELERATED=true
 
 # Environment variables.
 ENV ANDROID_SDK_ROOT=/opt/android \

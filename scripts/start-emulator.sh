@@ -25,6 +25,8 @@ echo "Creating the Android Virtual Emulator ..."
 echo "Using package '$PACKAGE_PATH', ABI '$ABI' and device '$DEVICE_ID' for creating the emulator"
 echo no | avdmanager create avd -n android --abi "$ABI" -k "$PACKAGE_PATH" --device "$DEVICE_ID"
 
+Xvfb "$DISPLAY" -screen 0 1920x1080x16 -nolisten tcp &
+
 # Asynchronously write updates on the standard output
 # about the state of the boot sequence.
 #cat ~/.android/avd/android.avd/config.ini
@@ -33,8 +35,9 @@ wait_for_boot &
 # Start the emulator with no audio, no GUI, and no snapshots.
 echo "Starting the emulator ..."
 emulator \
+  -verbose \
   -avd android \
-  -gpu swiftshader_indirect \
+  -gpu host \
   -noaudio \
   -no-boot-anim \
   -no-window \

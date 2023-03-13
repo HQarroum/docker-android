@@ -21,6 +21,8 @@ RUN apt update -y && \
     		openjdk-11-jdk \
     		ca-certificates-java \
         virt-manager \
+        libvulkan1 \
+        xvfb \
 				libgl1-mesa-glx \
         libgl1-mesa-dri \
 				iproute2 && \
@@ -46,6 +48,7 @@ ENV ANDROID_SDK_ROOT=/opt/android \
     ARCHITECTURE=$ARCHITECTURE \
     ABI=${IMG_TYPE}/${ARCHITECTURE} \
     QTWEBENGINE_DISABLE_SANDBOX=1 \
+    DISPLAY=:99 \
     ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL=10
 
 # Exporting environment variables for keeping in the path

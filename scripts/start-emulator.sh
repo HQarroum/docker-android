@@ -38,7 +38,6 @@ emulator \
   -verbose \
   -avd android \
   -gpu host \
-  -noaudio \
   -no-boot-anim \
   -no-window \
   -no-snapshot-save \

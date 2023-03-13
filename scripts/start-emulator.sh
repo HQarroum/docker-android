@@ -34,6 +34,7 @@ wait_for_boot &
 echo "Starting the emulator ..."
 emulator \
   -avd android \
+  -gpu swiftshader_indirect \
   -noaudio \
   -no-boot-anim \
   -no-window \

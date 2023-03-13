@@ -20,6 +20,9 @@ RUN apk update && \
 		libvirt-daemon \
 		dbus \
 		polkit \
+		mesa \
+		mesa-dev \
+		mesa-gl \
 		virt-manager && \
 	# Compile `redir`.
 	gcc /usr/src/redir.c -o /usr/bin/redir && \

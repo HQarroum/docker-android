@@ -20,6 +20,4 @@ jobs:
         with:
           push: true
           tags: halimqarroum/docker-android:test
-          build-args: |
-            API_LEVEL=33
-            IMG_TYPE=google_apis
+          build-args: INSTALL_ANDROID_SDK=0

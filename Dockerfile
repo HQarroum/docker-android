@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04
 
 # Docker labels.
 LABEL maintainer "Halim Qarroum <hqm.post@gmail.com>"
@@ -10,26 +10,23 @@ LABEL version "1.0.0"
 COPY deps/redir/redir.c /usr/src/redir.c
 
 # Installing required packages.
-RUN apk update && \
-	apk upgrade && \
-	apk add --no-cache \
-		alpine-sdk \
-		bash \
-		unzip \
-		wget \
-		libvirt-daemon \
-		dbus \
-		polkit \
-		mesa \
-		mesa-dev \
-		mesa-gl \
-		virt-manager && \
-	# Compile `redir`.
-	gcc /usr/src/redir.c -o /usr/bin/redir && \
-	strip /usr/bin/redir && \
-	# Cleanup APK.
-	apk del alpine-sdk && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apk/*
+RUN apt update -y && \
+    apt install -y --no-install-recommends \
+        build-essential \
+        bash \
+        unzip \
+        wget \
+        libvirt-daemon \
+        dbus \
+    		openjdk-11-jdk \
+    		ca-certificates-java \
+        virt-manager \
+				libgl1-mesa-glx \
+        libgl1-mesa-dri && \
+    # Compile `redir`.
+    gcc /usr/src/redir.c -o /usr/bin/redir && \
+    strip /usr/bin/redir && \
+		rm -rf /var/lib/apt/lists/*
 
 # Arguments that can be overriden at build-time.
 ARG INSTALL_ANDROID_SDK=1

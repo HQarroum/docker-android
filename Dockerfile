@@ -22,7 +22,8 @@ RUN apt update -y && \
     		ca-certificates-java \
         virt-manager \
 				libgl1-mesa-glx \
-        libgl1-mesa-dri && \
+        libgl1-mesa-dri \
+				iproute2 && \
     # Compile `redir`.
     gcc /usr/src/redir.c -o /usr/bin/redir && \
     strip /usr/bin/redir && \

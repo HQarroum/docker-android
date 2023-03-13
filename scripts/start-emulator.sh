@@ -28,10 +28,10 @@ echo no | avdmanager create avd -f -n android --abi "$ABI" -k "$PACKAGE_PATH" --
 # If GPU acceleration is enabled, we create a virtual framebuffer
 # to be used by the emulator when running with GPU acceleration.
 if [ "$GPU_ACCELERATED" == "true" ]; then
-  echo "Running with GPU acceleration enabled";
-  export DISPLAY=":0.0";
-  export GPU_MODE="host";
-  Xvfb "$DISPLAY" -screen 0 1920x1080x16 -nolisten tcp &;
+  echo "Running with GPU acceleration enabled"
+  export DISPLAY=":0.0"
+  export GPU_MODE="host"
+  Xvfb "$DISPLAY" -screen 0 1920x1080x16 -nolisten tcp &
 else
   export GPU_MODE="auto"
 fi

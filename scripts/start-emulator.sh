@@ -23,20 +23,35 @@ export USER=root
 # Creating the Android Virtual Emulator.
 echo "Creating the Android Virtual Emulator ..."
 echo "Using package '$PACKAGE_PATH', ABI '$ABI' and device '$DEVICE_ID' for creating the emulator"
-echo no | avdmanager create avd -n android --abi "$ABI" -k "$PACKAGE_PATH" --device "$DEVICE_ID"
+echo no | avdmanager create avd \
+  --force \
+  --name android \
+  --abi "$ABI" \
+  --package "$PACKAGE_PATH" \
+  --device "$DEVICE_ID"
+
+# If GPU acceleration is enabled, we create a virtual framebuffer
+# to be used by the emulator when running with GPU acceleration.
+# We also set the GPU mode to `host` to force the emulator to use
+# GPU acceleration.
+if [ "$GPU_ACCELERATED" == "true" ]; then
+  export DISPLAY=":0.0"
+  export GPU_MODE="host"
+  Xvfb "$DISPLAY" -screen 0 1920x1080x16 -nolisten tcp &
+else
+  export GPU_MODE="auto"
+fi
 
 # Asynchronously write updates on the standard output
 # about the state of the boot sequence.
-#cat ~/.android/avd/android.avd/config.ini
 wait_for_boot &
 
 # Start the emulator with no audio, no GUI, and no snapshots.
 echo "Starting the emulator ..."
 emulator \
+  -verbose \
   -avd android \
-  -noaudio \
+  -gpu "$GPU_MODE" \
   -no-boot-anim \
   -no-window \
-  -no-snapshot-save \
-  -qemu \
-  -enable-kvm || update_state "ANDROID_STOPPED"
+  -no-snapshot || update_state "ANDROID_STOPPED"

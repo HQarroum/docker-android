@@ -13,10 +13,11 @@ ADB_PORT=5555
 echo "Starting the ADB server ..."
 adb -a -P 5037 server nodaemon &
 
-# Detect ip and forward ADB ports outside to outside interface
-ip=$(ip addr list eth0 | grep "inet " | cut -d' ' -f6 | cut -d/ -f1)
-redir --laddr="$ip" --lport="$EMULATOR_CONSOLE_PORT" --caddr=127.0.0.1 --cport="$EMULATOR_CONSOLE_PORT" &
-redir --laddr="$ip" --lport="$ADB_PORT" --caddr=127.0.0.1 --cport="$ADB_PORT" &
+# Detect ip and forward ADB ports from the container's network
+# interface to localhost.
+LOCAL_IP=$(ip addr list eth0 | grep "inet " | cut -d' ' -f6 | cut -d/ -f1)
+socat tcp-listen:"$EMULATOR_CONSOLE_PORT",bind="$LOCAL_IP",fork tcp:127.0.0.1:"$EMULATOR_CONSOLE_PORT" &
+socat tcp-listen:"$ADB_PORT",bind="$LOCAL_IP",fork tcp:127.0.0.1:"$ADB_PORT" &
 
 export USER=root
 
@@ -39,7 +40,7 @@ if [ "$GPU_ACCELERATED" == "true" ]; then
   export GPU_MODE="host"
   Xvfb "$DISPLAY" -screen 0 1920x1080x16 -nolisten tcp &
 else
-  export GPU_MODE="auto"
+  export GPU_MODE="swiftshader_indirect"
 fi
 
 # Asynchronously write updates on the standard output
@@ -49,7 +50,6 @@ wait_for_boot &
 # Start the emulator with no audio, no GUI, and no snapshots.
 echo "Starting the emulator ..."
 emulator \
-  -verbose \
   -avd android \
   -gpu "$GPU_MODE" \
   -no-boot-anim \

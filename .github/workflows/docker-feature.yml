@@ -19,5 +19,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
+          file: Dockerfile.gpu
           tags: halimqarroum/docker-android:test
           build-args: INSTALL_ANDROID_SDK=0

@@ -31,17 +31,19 @@ echo no | avdmanager create avd \
   --package "$PACKAGE_PATH" \
   --device "$DEVICE_ID"
 
+export DISPLAY=":0.0"
+
 # If GPU acceleration is enabled, we create a virtual framebuffer
 # to be used by the emulator when running with GPU acceleration.
 # We also set the GPU mode to `host` to force the emulator to use
 # GPU acceleration.
-if [ "$GPU_ACCELERATED" == "true" ]; then
-  export DISPLAY=":0.0"
-  export GPU_MODE="host"
-  Xvfb "$DISPLAY" -screen 0 1920x1080x16 -nolisten tcp &
-else
-  export GPU_MODE="swiftshader_indirect"
-fi
+# if [ "$GPU_ACCELERATED" == "true" ]; then
+  
+#   export GPU_MODE="host"
+#   Xvfb "$DISPLAY" -screen 0 1920x1080x16 -nolisten tcp &
+# else
+#   export GPU_MODE="swiftshader_indirect"
+# fi
 
 # Asynchronously write updates on the standard output
 # about the state of the boot sequence.
@@ -51,7 +53,7 @@ wait_for_boot &
 echo "Starting the emulator ..."
 emulator \
   -avd android \
-  -gpu "$GPU_MODE" \
+  -gpu "swiftshader_indirect" \
   -no-boot-anim \
   -no-window \
   -no-snapshot || update_state "ANDROID_STOPPED"

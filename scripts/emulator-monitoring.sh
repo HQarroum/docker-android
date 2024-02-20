@@ -13,6 +13,19 @@ function update_state() {
   write_log "state-update" "$1"
 }
 
+function disable_animation() {
+  adb shell "settings put global window_animation_scale 0.0"
+  adb shell "settings put global transition_animation_scale 0.0"
+  adb shell "settings put global animator_duration_scale 0.0"
+  echo "...Disable animations"
+};
+
+function hidden_policy() {
+  adb shell "settings put global hidden_api_policy_pre_p_apps 1;settings put global hidden_api_policy_p_apps 1;settings put global hidden_api_policy 1"
+  echo "...Hidden policy"
+};
+
+
 # Waits for the emulator to boot and writes
 # state updates on the standard output.
 function wait_for_boot() {
@@ -30,5 +43,15 @@ function wait_for_boot() {
     COMPLETED=$(adb shell getprop sys.boot_completed | tr -d '\r')
     sleep 5
   done
+  sleep 1
+  if [ "$DISABLE_ANIMATION" = "true" ]; then
+  disable_animation
+  sleep 1
+  fi
+
+  if [ "$DISABLE_HIDDEN_POLICY" = "true" ]; then
+  hidden_policy
+  sleep 1
+  fi
   update_state "ANDROID_READY"
 }

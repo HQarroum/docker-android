@@ -1,27 +1,29 @@
-FROM nvidia/cuda:12.1.0-base-ubuntu22.04
+FROM nvidia/cuda:12.3.1-base-ubuntu22.04
 
 # Docker labels.
 LABEL maintainer "Halim Qarroum <hqm.post@gmail.com>"
 LABEL description "A Docker image allowing to run an Android emulator"
-LABEL version "1.1.0"
+LABEL version "1.2.0"
+ENV DEBIAN_FRONTEND noninteractive
 
 # Installing required packages.
 RUN apt update -y && \
-    DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
-        bash \
-        unzip \
-        wget \
-        libvirt-daemon \
-        dbus \
-    		openjdk-11-jdk \
-        virt-manager \
-        libvulkan1 \
-        xvfb \
-				libgl1-mesa-glx \
-        libgl1-mesa-dri \
-        socat \
-				iproute2 && \
-		rm -rf /var/lib/apt/lists/*
+  apt install -y --no-install-recommends \
+  bash \
+  unzip \
+  wget \
+  libvirt-daemon \
+  dbus \
+  openjdk-18-jre-headless \
+  virt-manager \
+  libvulkan1 \
+  xvfb \
+  libgl1-mesa-glx \
+  libgl1-mesa-dri \
+  socat \
+  htop \
+  iproute2 && \
+  rm -rf /var/lib/apt/lists/*
 
 # Arguments that can be overriden at build-time.
 ARG INSTALL_ANDROID_SDK=1
@@ -34,15 +36,15 @@ ARG GPU_ACCELERATED=true
 
 # Environment variables.
 ENV ANDROID_SDK_ROOT=/opt/android \
-    ANDROID_PLATFORM_VERSION="platforms;android-$API_LEVEL" \
-    PACKAGE_PATH="system-images;android-${API_LEVEL};${IMG_TYPE};${ARCHITECTURE}" \
-    API_LEVEL=$API_LEVEL \
-		DEVICE_ID=$DEVICE_ID \
-    ARCHITECTURE=$ARCHITECTURE \
-    ABI=${IMG_TYPE}/${ARCHITECTURE} \
-    GPU_ACCELERATED=$GPU_ACCELERATED \
-    QTWEBENGINE_DISABLE_SANDBOX=1 \
-    ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL=10
+  ANDROID_PLATFORM_VERSION="platforms;android-$API_LEVEL" \
+  PACKAGE_PATH="system-images;android-${API_LEVEL};${IMG_TYPE};${ARCHITECTURE}" \
+  API_LEVEL=$API_LEVEL \
+  DEVICE_ID=$DEVICE_ID \
+  ARCHITECTURE=$ARCHITECTURE \
+  ABI=${IMG_TYPE}/${ARCHITECTURE} \
+  GPU_ACCELERATED=$GPU_ACCELERATED \
+  QTWEBENGINE_DISABLE_SANDBOX=1 \
+  ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL=10
 
 # Exporting environment variables for keeping in the path
 # Android SDK binaries and shared libraries.
@@ -60,10 +62,10 @@ EXPOSE 5554 5555
 
 # Initializing the required directories.
 RUN mkdir /root/.android/ && \
-	touch /root/.android/repositories.cfg
+  touch /root/.android/repositories.cfg
 
 # Exporting ADB keys.
-COPY keys/* /root/.android/
+#COPY keys/* /root/.android/
 
 # The following layers will download the Android command-line tools
 # to install the Android SDK, emulator and system images.
@@ -76,6 +78,5 @@ RUN /opt/install-sdk.sh
 COPY scripts/start-emulator.sh /opt/
 COPY scripts/emulator-monitoring.sh /opt/
 RUN chmod +x /opt/*.sh
-
 # Set the entrypoint
 ENTRYPOINT ["/opt/start-emulator.sh"]

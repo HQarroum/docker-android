@@ -8,7 +8,10 @@ source ./emulator-monitoring.sh
 EMULATOR_CONSOLE_PORT=5554
 # The ADB port used to connect to ADB.
 ADB_PORT=5555
-
+MEMORY=16048
+CORES=10
+SKIP_AUTH=true
+AUTH_FLAG=
 # Start ADB server by listening on all interfaces.
 echo "Starting the ADB server ..."
 adb -a -P 5037 server nodaemon &
@@ -31,6 +34,10 @@ echo no | avdmanager create avd \
   --package "$PACKAGE_PATH" \
   --device "$DEVICE_ID"
 
+if [ "$SKIP_AUTH" == "true" ]; then
+  AUTH_FLAG="-skip-adb-auth"
+fi
+
 # If GPU acceleration is enabled, we create a virtual framebuffer
 # to be used by the emulator when running with GPU acceleration.
 # We also set the GPU mode to `host` to force the emulator to use
@@ -48,10 +55,22 @@ fi
 wait_for_boot &
 
 # Start the emulator with no audio, no GUI, and no snapshots.
-echo "Starting the emulator ..."
+echo "Starting the emulator ... "
+echo "OPTIONS: "
+echo  "GPU - $GPU_MODE"
+echo "MEMORY - $MEMORY"
+echo "CORES - $CORES"
 emulator \
   -avd android \
   -gpu "$GPU_MODE" \
+  -memory $MEMORY \
   -no-boot-anim \
+  -cores $CORES \
+  -ranchu \
+  $AUTH_FLAG \
   -no-window \
-  -no-snapshot || update_state "ANDROID_STOPPED"
+  -no-snapshot  || update_state "ANDROID_STOPPED"
+
+
+  # -qemu \
+  # -smp 8,sockets=1,cores=4,threads=2,maxcpus=8 

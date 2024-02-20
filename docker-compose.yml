@@ -1,0 +1,92 @@
+version: "4"
+services:
+  android-emulator:
+    build: 
+      context: .
+      args:
+        - API_LEVEL=34
+        - CMD_LINE_VERSION=11076708_latest
+        - IMG_TYPE=google_apis
+    ports:
+      - 5554:5554
+      - 5555:5555
+    environment:
+      - DISABLE_ANIMATION=false
+      - DISABLE_HIDDEN_POLICY=true
+      - SKIP_AUTH=false
+      #- ANDROID_ADB_SERVER_ADDRESS=host.docker.internal
+    privileged: true 
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./keys/adbkey:/root/.android/adbkey:ro
+      - ./keys/adbkey.pub:/root/.android/adbkey.pub:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  
+
+  android-emulator-cuda:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.gpu
+      args:
+        - API_LEVEL=34
+        - CMD_LINE_VERSION=11076708_latest
+        - IMG_TYPE=google_apis
+    ports:
+      - 5554:5554
+      - 5555:5555
+    environment:
+      - DISABLE_ANIMATION=false
+      - DISABLE_HIDDEN_POLICY=true
+      - SKIP_AUTH=false
+      #- ANDROID_ADB_SERVER_ADDRESS=host.docker.internal
+    privileged: true 
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./keys/adbkey:/root/.android/adbkey:ro
+      - ./keys/adbkey.pub:/root/.android/adbkey.pub:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  android-emulator-cuda-store:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.gpu
+      args:
+        - API_LEVEL=34
+        - CMD_LINE_VERSION=11076708_latest
+        - IMG_TYPE=google_apis_playstore
+    ports:
+      - 5554:5554
+      - 5555:5555
+    environment:
+      - DISABLE_ANIMATION=false
+      - DISABLE_HIDDEN_POLICY=true
+      - SKIP_AUTH=false
+      #- ANDROID_ADB_SERVER_ADDRESS=host.docker.internal
+    privileged: true 
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./keys/adbkey:/root/.android/adbkey:ro
+      - ./keys/adbkey.pub:/root/.android/adbkey.pub:ro
+    # volumes:
+    #   - ./:/mnt
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  

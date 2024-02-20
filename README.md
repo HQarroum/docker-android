@@ -45,9 +45,37 @@ Without SDK and emulator  |      414 MB      |    138 MB    |
 
 By default, a build will bundle the Android SDK, platform tools and emulator with the image.
 
+with docker-compose:
+
+```bash
+docker compose up android-emulator
+```
+
+or with GPU acceleration
+```bash
+docker compose up android-emulator-cuda
+```
+
+or for example with GPU acceleration and google playstore
+```bash
+docker compose up android-emulator-cuda-store
+```
+
+with only docker
+
+
 ```bash
 docker build -t android-emulator .
 ```
+
+## Keys
+
+To run google_apis_playstore image, you need to have same adbkey between emulator and client.
+
+You can generate one by running `adb keygen adbkey`, that generates 2 files - adbkey and adbkey.pub.
+
+override them inside ./keys directory.
+
 
 ### Running the container
 
@@ -112,6 +140,17 @@ docker build \
   --build-arg ARCHITECTURE=x86 \
   --tag android-emulator .
 ```
+
+### Variables
+
+#### Disable animation
+DISABLE_ANIMATION=false
+
+#### Disable hidden policy
+DISABLE_HIDDEN_POLICY=true
+
+#### skip adb authentication
+SKIP_AUTH=false
 
 ### Mount an external drive in the container
 

@@ -142,15 +142,22 @@ docker build \
 ```
 
 ### Variables
+## Default variables
 
 #### Disable animation
 DISABLE_ANIMATION=false
 
 #### Disable hidden policy
-DISABLE_HIDDEN_POLICY=true
+DISABLE_HIDDEN_POLICY=false
 
-#### skip adb authentication
-SKIP_AUTH=false
+#### Skip adb authentication
+SKIP_AUTH=true
+
+#### Memory for emulator
+MEMORY=8192
+
+#### Cores for emulator
+CORES=4
 
 ### Mount an external drive in the container
 

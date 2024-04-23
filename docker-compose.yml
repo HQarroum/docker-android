@@ -1,7 +1,7 @@
 version: "4"
 services:
   android-emulator:
-    build: 
+    build:
       context: .
       args:
         - API_LEVEL=34
@@ -15,14 +15,16 @@ services:
       - DISABLE_HIDDEN_POLICY=true
       - SKIP_AUTH=false
       #- ANDROID_ADB_SERVER_ADDRESS=host.docker.internal
-    privileged: true 
+      - MEMORY=16384
+      - CORES=16
+    privileged: true
     tty: true
     stdin_open: true
     volumes:
       - ./keys/adbkey:/root/.android/adbkey:ro
       - ./keys/adbkey.pub:/root/.android/adbkey.pub:ro
     extra_hosts:
-      - "host.docker.internal:host-gateway"  
+      - "host.docker.internal:host-gateway"
 
   android-emulator-cuda:
     build:
@@ -40,14 +42,16 @@ services:
       - DISABLE_HIDDEN_POLICY=true
       - SKIP_AUTH=false
       #- ANDROID_ADB_SERVER_ADDRESS=host.docker.internal
-    privileged: true 
+      - MEMORY=16384
+      - CORES=16
+    privileged: true
     tty: true
     stdin_open: true
     volumes:
       - ./keys/adbkey:/root/.android/adbkey:ro
       - ./keys/adbkey.pub:/root/.android/adbkey.pub:ro
     extra_hosts:
-      - "host.docker.internal:host-gateway"  
+      - "host.docker.internal:host-gateway"
     deploy:
       resources:
         reservations:
@@ -72,7 +76,9 @@ services:
       - DISABLE_HIDDEN_POLICY=true
       - SKIP_AUTH=false
       #- ANDROID_ADB_SERVER_ADDRESS=host.docker.internal
-    privileged: true 
+      - MEMORY=16384
+      - CORES=16
+    privileged: true
     tty: true
     stdin_open: true
     volumes:
@@ -81,7 +87,7 @@ services:
     # volumes:
     #   - ./:/mnt
     extra_hosts:
-      - "host.docker.internal:host-gateway"  
+      - "host.docker.internal:host-gateway"
     deploy:
       resources:
         reservations:
@@ -89,4 +95,3 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-  

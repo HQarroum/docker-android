@@ -4,9 +4,9 @@ ENV DEBIAN_FRONTEND noninteractive
 
 #WORKDIR /
 #=============================
-# Install Dependenices 
+# Install Dependenices
 #=============================
-SHELL ["/bin/bash", "-c"]   
+SHELL ["/bin/bash", "-c"]
 
 RUN apt update && apt install -y curl \
 	sudo wget unzip bzip2 libdrm-dev \
@@ -41,7 +41,8 @@ ENV ANDROID_SDK_ROOT=/opt/android \
 	ABI=${IMG_TYPE}/${ARCHITECTURE} \
 	GPU_ACCELERATED=$GPU_ACCELERATED \
 	QTWEBENGINE_DISABLE_SANDBOX=1 \
-	ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL=10
+	ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL=10 \
+	ANDROID_AVD_HOME=/data
 
 # Exporting environment variables to keep in the path
 # Android SDK binaries and shared libraries.
@@ -59,7 +60,8 @@ EXPOSE 5554 5555
 
 # Initializing the required directories.
 RUN mkdir /root/.android/ && \
-	touch /root/.android/repositories.cfg
+	touch /root/.android/repositories.cfg && \
+	mkdir /data
 
 # Exporting ADB keys.
 #COPY keys/* /root/.android/

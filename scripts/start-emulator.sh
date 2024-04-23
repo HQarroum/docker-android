@@ -25,14 +25,19 @@ socat tcp-listen:"$ADB_PORT",bind="$LOCAL_IP",fork tcp:127.0.0.1:"$ADB_PORT" &
 export USER=root
 
 # Creating the Android Virtual Emulator.
-echo "Creating the Android Virtual Emulator ..."
-echo "Using package '$PACKAGE_PATH', ABI '$ABI' and device '$DEVICE_ID' for creating the emulator"
-echo no | avdmanager create avd \
-  --force \
-  --name android \
-  --abi "$ABI" \
-  --package "$PACKAGE_PATH" \
-  --device "$DEVICE_ID"
+TEST_AVD="$(emulator -list-avds | grep android)"
+if [ -z "$TEST_AVD" ]; then
+  echo "Use the exists Android Virtual Emulator ..."
+else
+  echo "Creating the Android Virtual Emulator ..."
+  echo "Using package '$PACKAGE_PATH', ABI '$ABI' and device '$DEVICE_ID' for creating the emulator"
+  echo no | avdmanager create avd \
+    --force \
+    --name android \
+    --abi "$ABI" \
+    --package "$PACKAGE_PATH" \
+    --device "$DEVICE_ID"
+fi
 
 if [ "$OPT_SKIP_AUTH" == "true" ]; then
   AUTH_FLAG="-skip-adb-auth"

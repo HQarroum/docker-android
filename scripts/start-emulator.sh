@@ -4,13 +4,13 @@ set -e
 
 source ./emulator-monitoring.sh
 
-# The emulator console port. 
+# The emulator console port.
 EMULATOR_CONSOLE_PORT=5554
 # The ADB port used to connect to ADB.
 ADB_PORT=5555
-MEMORY=16048
-CORES=10
-SKIP_AUTH=true
+OPT_MEMORY=${MEMORY:-8192}
+OPT_CORES=${CORES:-4}
+OPT_SKIP_AUTH=${SKIP_AUTH:-true}
 AUTH_FLAG=
 # Start ADB server by listening on all interfaces.
 echo "Starting the ADB server ..."
@@ -25,16 +25,21 @@ socat tcp-listen:"$ADB_PORT",bind="$LOCAL_IP",fork tcp:127.0.0.1:"$ADB_PORT" &
 export USER=root
 
 # Creating the Android Virtual Emulator.
-echo "Creating the Android Virtual Emulator ..."
-echo "Using package '$PACKAGE_PATH', ABI '$ABI' and device '$DEVICE_ID' for creating the emulator"
-echo no | avdmanager create avd \
-  --force \
-  --name android \
-  --abi "$ABI" \
-  --package "$PACKAGE_PATH" \
-  --device "$DEVICE_ID"
+TEST_AVD="$(emulator -list-avds | grep android)"
+if [ -z "$TEST_AVD" ]; then
+  echo "Use the exists Android Virtual Emulator ..."
+else
+  echo "Creating the Android Virtual Emulator ..."
+  echo "Using package '$PACKAGE_PATH', ABI '$ABI' and device '$DEVICE_ID' for creating the emulator"
+  echo no | avdmanager create avd \
+    --force \
+    --name android \
+    --abi "$ABI" \
+    --package "$PACKAGE_PATH" \
+    --device "$DEVICE_ID"
+fi
 
-if [ "$SKIP_AUTH" == "true" ]; then
+if [ "$OPT_SKIP_AUTH" == "true" ]; then
   AUTH_FLAG="-skip-adb-auth"
 fi
 
@@ -55,17 +60,18 @@ fi
 wait_for_boot &
 
 # Start the emulator with no audio, no GUI, and no snapshots.
-echo "Starting the emulator ... "
-echo "OPTIONS: "
-echo  "GPU - $GPU_MODE"
-echo "MEMORY - $MEMORY"
-echo "CORES - $CORES"
+echo "Starting the emulator ..."
+echo "OPTIONS:"
+echo "ADB AUTH - $OPT_SKIP_AUTH"
+echo "GPU      - $GPU_MODE"
+echo "MEMORY   - $OPT_MEMORY"
+echo "CORES    - $OPT_CORES"
 emulator \
   -avd android \
   -gpu "$GPU_MODE" \
-  -memory $MEMORY \
+  -memory $OPT_MEMORY \
   -no-boot-anim \
-  -cores $CORES \
+  -cores $OPT_CORES \
   -ranchu \
   $AUTH_FLAG \
   -no-window \
@@ -73,4 +79,4 @@ emulator \
 
 
   # -qemu \
-  # -smp 8,sockets=1,cores=4,threads=2,maxcpus=8 
+  # -smp 8,sockets=1,cores=4,threads=2,maxcpus=8

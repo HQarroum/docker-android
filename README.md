@@ -76,7 +76,6 @@ You can generate one by running `adb keygen adbkey`, that generates 2 files - ad
 
 override them inside ./keys directory.
 
-
 ### Running the container
 
 Once the image is built, you can mount your KVM driver on the container and expose its ADB port.
@@ -85,6 +84,14 @@ Once the image is built, you can mount your KVM driver on the container and expo
 
 ```bash
 docker run -it --rm --device /dev/kvm -p 5555:5555 android-emulator
+```
+
+### Save data/storage after restart (wipe)
+
+All avd save in docker dir `/data`, name for avd is `android`
+
+```bash
+docker run -it --rm --device /dev/kvm -p 5555:5555 -v ~/android_avd:/data android-emulator
 ```
 
 ### Connect ADB to the container
@@ -142,15 +149,22 @@ docker build \
 ```
 
 ### Variables
+## Default variables
 
 #### Disable animation
 DISABLE_ANIMATION=false
 
 #### Disable hidden policy
-DISABLE_HIDDEN_POLICY=true
+DISABLE_HIDDEN_POLICY=false
 
-#### skip adb authentication
-SKIP_AUTH=false
+#### Skip adb authentication
+SKIP_AUTH=true
+
+#### Memory for emulator
+MEMORY=8192
+
+#### Cores for emulator
+CORES=4
 
 ### Mount an external drive in the container
 

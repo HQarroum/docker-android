@@ -25,8 +25,8 @@ socat tcp-listen:"$ADB_PORT",bind="$LOCAL_IP",fork tcp:127.0.0.1:"$ADB_PORT" &
 export USER=root
 
 # Creating the Android Virtual Emulator.
-TEST_AVD="$(emulator -list-avds | grep android)"
-if [ -z "$TEST_AVD" ]; then
+TEST_AVD=$(avdmanager list avd | grep "android")
+if [ -n "$TEST_AVD" ]; then
   echo "Use the exists Android Virtual Emulator ..."
 else
   echo "Creating the Android Virtual Emulator ..."

@@ -62,10 +62,10 @@ wait_for_boot &
 # Start the emulator with no audio, no GUI, and no snapshots.
 echo "Starting the emulator ..."
 echo "OPTIONS:"
-echo "ADB AUTH - $OPT_SKIP_AUTH"
-echo "GPU      - $GPU_MODE"
-echo "MEMORY   - $OPT_MEMORY"
-echo "CORES    - $OPT_CORES"
+echo "SKIP ADB AUTH - $OPT_SKIP_AUTH"
+echo "GPU           - $GPU_MODE"
+echo "MEMORY        - $OPT_MEMORY"
+echo "CORES         - $OPT_CORES"
 emulator \
   -avd android \
   -gpu "$GPU_MODE" \

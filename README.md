@@ -149,7 +149,7 @@ docker build \
 ```
 
 ### Variables
-## Default variables
+#### Default variables
 
 #### Disable animation
 DISABLE_ANIMATION=false

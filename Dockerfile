@@ -60,11 +60,10 @@ EXPOSE 5554 5555
 
 # Initializing the required directories.
 RUN mkdir /root/.android/ && \
-	touch /root/.android/repositories.cfg && \
 	mkdir /data
 
-# Exporting ADB keys.
-COPY keys/* /root/.android/
+# Exporting ADB keys and repo
+COPY resources/* /root/.android/
 
 # The following layers will download the Android command-line tools
 # to install the Android SDK, emulator and system images.

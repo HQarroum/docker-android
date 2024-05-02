@@ -8,7 +8,7 @@ on:
       - 'Dockerfile.gpu'
       - '.github/workflows/*'
       - 'deps/*'
-      - 'keys/*'
+      - 'resources/*'
       - 'scripts/*'
 
 jobs:
@@ -65,3 +65,32 @@ jobs:
           file: ${{ matrix.gpu.file }}
           tags: halimqarroum/docker-android:minimal${{ matrix.gpu.suffix }}
           build-args: INSTALL_ANDROID_SDK=0
+
+  # Builds a minimal image microg
+  build-microg:
+    strategy:
+      matrix:
+        version: [29]
+        image: [
+          { name: 'microg', suffix: '-microg' }
+        ]
+        gpu: [
+          { file: 'Dockerfile', suffix: '' },
+          { file: 'Dockerfile.gpu', suffix: '-cuda' }
+        ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Build Docker image api-${{ matrix.version }}${{ matrix.image.suffix }}
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          file: ${{ matrix.gpu.file }}
+          tags: halimqarroum/docker-android:api-${{ matrix.version }}${{ matrix.image.suffix }}${{ matrix.gpu.suffix }}
+          build-args: |
+            API_LEVEL=${{ matrix.version }}
+            IMG_TYPE=${{ matrix.image.name }}

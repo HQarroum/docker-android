@@ -166,6 +166,9 @@ MEMORY=8192
 #### Cores for emulator
 CORES=4
 
+#### Extra flags to emulator
+EXTRA_FLAGS="-no-metrics -no-audio -partition-size=8192"
+
 ### Mount an external drive in the container
 
 It might be sometimes useful to have the entire Android SDK folder outside of the container (stored on a shared distributed filesystem such as NFS for example), to significantly reduce the size and the build time of the image.

@@ -69,13 +69,14 @@ echo "CORES         - $OPT_CORES"
 emulator \
   -avd android \
   -gpu "$GPU_MODE" \
-  -memory $OPT_MEMORY \
+  -memory "$OPT_MEMORY" \
   -no-boot-anim \
-  -cores $OPT_CORES \
+  -cores "$OPT_CORES" \
   -ranchu \
   $AUTH_FLAG \
   -no-window \
-  -no-snapshot  || update_state "ANDROID_STOPPED"
+  -no-snapshot \
+  $EXTRA_FLAGS || update_state "ANDROID_STOPPED"
 
 
   # -qemu \

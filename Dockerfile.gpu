@@ -18,9 +18,13 @@ RUN apt update -y && \
   virt-manager \
   libvulkan1 \
   xvfb \
+  x11vnc \
+  fluxbox \
   libgl1-mesa-glx \
   libgl1-mesa-dri \
   socat \
+  novnc \
+  websockify \
   htop \
   iproute2 && \
   rm -rf /var/lib/apt/lists/*
@@ -59,7 +63,7 @@ WORKDIR /opt
 
 # Exposing the Android emulator console port
 # and the ADB port.
-EXPOSE 5554 5555
+EXPOSE 5554 5555 5900 6080
 
 # Initializing the required directories.
 RUN mkdir /root/.android/ && \

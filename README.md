@@ -6,6 +6,8 @@
 # docker-android
 > A minimal and customizable Docker image running the Android emulator as a service.
 
+中文: [README.zh-CN.md](README.zh-CN.md)
+
 [![Docker Image CI](https://github.com/HQarroum/docker-android/actions/workflows/docker-image.yml/badge.svg)](https://github.com/HQarroum/docker-android/actions/workflows/docker-image.yml)
 [![DeepSource](https://deepsource.io/gh/HQarroum/docker-android.svg/?label=active+issues&show_trend=true&token=JTfGSHolIiMj0WNfv2ES0I6X)](https://deepsource.io/gh/HQarroum/docker-android/?ref=repository-badge)
 ![Docker Pulls](https://img.shields.io/docker/pulls/halimqarroum/docker-android)
@@ -27,6 +29,7 @@ Current version: **1.1.0**
 - Port-forwarding of emulator and ADB on the container network interface built-in.
 - Emulator images are wiped each time the emulator re-starts.
 - Runs headless, suitable for CI farms. Compatible with [`scrcpy`](https://github.com/Genymobile/scrcpy) to remotely control the Android screen.
+- Optional browser access through noVNC for viewing and interacting with the emulator without a local GUI client.
 
 ## 🔰 Description
 
@@ -50,6 +53,8 @@ with docker-compose:
 ```bash
 docker compose up android-emulator
 ```
+
+The default compose service also exposes noVNC on `127.0.0.1:6080`.
 
 or with GPU acceleration
 ```bash
@@ -110,6 +115,34 @@ Additionally, you can use [`scrcpy`](https://github.com/Genymobile/scrcpy) to co
 scrcpy
 ```
 
+### Access the emulator with noVNC
+
+The compose services in this repository can also publish the emulator window through noVNC. This avoids installing a local GUI client on the host and is useful when you only need a browser.
+
+Start one of the bundled services:
+
+```bash
+docker compose up --build android-emulator
+```
+
+or
+
+```bash
+docker compose up --build android-emulator-cuda
+```
+
+Once the container is running and the emulator has booted, open:
+
+```text
+http://127.0.0.1:6080/vnc.html
+```
+
+Notes:
+
+- `5555` remains available for `adb connect 127.0.0.1:5555`.
+- The compose file enables noVNC with `ENABLE_NOVNC=true`.
+- The virtual display size can be adjusted with `DISPLAY_WIDTH`, `DISPLAY_HEIGHT`, and `DISPLAY_DPI`.
+
 <br />
 <table>
   <tr>
@@ -159,6 +192,18 @@ DISABLE_HIDDEN_POLICY=false
 
 #### Skip adb authentication
 SKIP_AUTH=true
+
+#### Enable noVNC browser access
+ENABLE_NOVNC=false
+
+#### Virtual display width for noVNC
+DISPLAY_WIDTH=1080
+
+#### Virtual display height for noVNC
+DISPLAY_HEIGHT=1920
+
+#### Virtual display DPI for noVNC
+DISPLAY_DPI=160
 
 #### Memory for emulator
 MEMORY=8192

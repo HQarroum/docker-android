@@ -13,7 +13,7 @@ RUN apt update && apt install -y curl \
 	libxkbcommon-dev libgbm-dev libasound-dev libnss3 \
 	libxcursor1 libpulse-dev libxshmfence-dev \
 	xauth xvfb x11vnc fluxbox wmctrl libdbus-glib-1-2 socat \
-	virt-manager
+	virt-manager novnc websockify
 
 
 # Docker labels.
@@ -56,7 +56,7 @@ WORKDIR /opt
 
 # Exposing the Android emulator console port
 # and the ADB port.
-EXPOSE 5554 5555
+EXPOSE 5554 5555 5900 6080
 
 # Initializing the required directories.
 RUN mkdir /root/.android/ && \

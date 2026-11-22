@@ -56,7 +56,7 @@ fi
 git clone $REPO_URL
 cd $DIR_NAME
 
-# 6. Build and Run Container
+# 5. Build and Run Container
 echo -e "${GREEN}[4/5] Building and Starting Container (This may take 5-10 minutes)...${NC}"
 # Check for docker compose v2 or legacy docker-compose v1
 if docker compose version &> /dev/null; then
@@ -68,7 +68,7 @@ else
     exit 1
 fi
 
-# 7. Final Check and Output Info
+# 6. Final Check and Output Info
 echo -e "${GREEN}[5/5] Checking status...${NC}"
 sleep 5 # Wait a moment for container initialization
 

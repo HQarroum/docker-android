@@ -10,10 +10,15 @@ services:
     ports:
       - 5554:5554
       - 127.0.0.1:5555:5555
+      - 127.0.0.1:6080:6080
     environment:
-      - DISABLE_ANIMATION=false
+      - DISABLE_ANIMATION=true
       - DISABLE_HIDDEN_POLICY=true
       - SKIP_AUTH=false
+      - ENABLE_NOVNC=true
+      - DISPLAY_WIDTH=1080
+      - DISPLAY_HEIGHT=1920
+      - DISPLAY_DPI=160
       #- ANDROID_ADB_SERVER_ADDRESS=host.docker.internal
       - MEMORY=16384
       - CORES=16
@@ -40,10 +45,15 @@ services:
     ports:
       - 5554:5554
       - 127.0.0.1:5555:5555
+      - 127.0.0.1:6080:6080
     environment:
-      - DISABLE_ANIMATION=false
+      - DISABLE_ANIMATION=true
       - DISABLE_HIDDEN_POLICY=true
       - SKIP_AUTH=false
+      - ENABLE_NOVNC=true
+      - DISPLAY_WIDTH=1080
+      - DISPLAY_HEIGHT=1920
+      - DISPLAY_DPI=160
       #- ANDROID_ADB_SERVER_ADDRESS=host.docker.internal
       - MEMORY=16384
       - CORES=16
@@ -74,10 +84,15 @@ services:
     ports:
       - 5554:5554
       - 127.0.0.1:5555:5555
+      - 127.0.0.1:6080:6080
     environment:
-      - DISABLE_ANIMATION=false
+      - DISABLE_ANIMATION=true
       - DISABLE_HIDDEN_POLICY=true
       - SKIP_AUTH=false
+      - ENABLE_NOVNC=true
+      - DISPLAY_WIDTH=1080
+      - DISPLAY_HEIGHT=1920
+      - DISPLAY_DPI=160
       #- ANDROID_ADB_SERVER_ADDRESS=host.docker.internal
       - MEMORY=16384
       - CORES=16

@@ -11,7 +11,24 @@ ADB_PORT=5555
 OPT_MEMORY=${MEMORY:-8192}
 OPT_CORES=${CORES:-4}
 OPT_SKIP_AUTH=${SKIP_AUTH:-true}
+OPT_ENABLE_NOVNC=${ENABLE_NOVNC:-false}
+OPT_DISPLAY_WIDTH=${DISPLAY_WIDTH:-1080}
+OPT_DISPLAY_HEIGHT=${DISPLAY_HEIGHT:-1920}
+OPT_DISPLAY_DPI=${DISPLAY_DPI:-160}
 AUTH_FLAG=
+EMULATOR_WINDOW_FLAG="-no-window"
+
+function start_remote_desktop() {
+  export DISPLAY=":0.0"
+
+  Xvfb "$DISPLAY" -screen 0 "${OPT_DISPLAY_WIDTH}x${OPT_DISPLAY_HEIGHT}x24" -dpi "$OPT_DISPLAY_DPI" -nolisten tcp &
+  fluxbox >/tmp/fluxbox.log 2>&1 &
+  x11vnc -display "$DISPLAY" -forever -shared -rfbport 5900 -nopw >/tmp/x11vnc.log 2>&1 &
+
+  if [ "$OPT_ENABLE_NOVNC" == "true" ]; then
+    /usr/share/novnc/utils/novnc_proxy --vnc localhost:5900 --listen 6080 >/tmp/novnc.log 2>&1 &
+  fi
+}
 # Start ADB server by listening on all interfaces.
 echo "Starting the ADB server ..."
 adb -a -P 5037 server nodaemon &
@@ -50,9 +67,16 @@ fi
 if [ "$GPU_ACCELERATED" == "true" ]; then
   export DISPLAY=":0.0"
   export GPU_MODE="host"
-  Xvfb "$DISPLAY" -screen 0 1920x1080x16 -nolisten tcp &
 else
   export GPU_MODE="swiftshader_indirect"
+fi
+
+if [ "$OPT_ENABLE_NOVNC" == "true" ] || [ "$GPU_ACCELERATED" == "true" ]; then
+  start_remote_desktop
+fi
+
+if [ "$OPT_ENABLE_NOVNC" == "true" ]; then
+  EMULATOR_WINDOW_FLAG=
 fi
 
 # Asynchronously write updates on the standard output
@@ -74,7 +98,7 @@ emulator \
   -cores "$OPT_CORES" \
   -ranchu \
   $AUTH_FLAG \
-  -no-window \
+  $EMULATOR_WINDOW_FLAG \
   -no-snapshot \
   $EXTRA_FLAGS || update_state "ANDROID_STOPPED"
 

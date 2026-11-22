@@ -19,7 +19,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # 2. Check KVM Support (Hardware Virtualization)
-echo -e "${GREEN}[1/6] Checking KVM support (Hardware Virtualization)...${NC}"
+echo -e "${GREEN}[1/5] Checking KVM support (Hardware Virtualization)...${NC}"
 if [ -r /dev/kvm ]; then
     echo "OK: KVM device (/dev/kvm) is ready."
 else
@@ -32,7 +32,7 @@ else
 fi
 
 # 3. Check and Install Docker & Dependencies
-echo -e "${GREEN}[2/6] Checking and installing Docker...${NC}"
+echo -e "${GREEN}[2/5] Checking and installing Docker...${NC}"
 apt-get update -qq
 apt-get install -y git curl apt-transport-https ca-certificates software-properties-common -qq
 
@@ -47,7 +47,7 @@ else
 fi
 
 # 4. Clone Source Code
-echo -e "${GREEN}[3/6] Cloning docker-android source code...${NC}"
+echo -e "${GREEN}[3/5] Cloning docker-android source code...${NC}"
 if [ -d "$DIR_NAME" ]; then
     echo "Directory $DIR_NAME exists. Removing to reinstall..."
     rm -rf "$DIR_NAME"
@@ -56,14 +56,8 @@ fi
 git clone $REPO_URL
 cd $DIR_NAME
 
-# 5. FIX BASE IMAGE ISSUE (Important)
-echo -e "${GREEN}[4/6] Patching 'openjdk:21-jdk-slim' issue in Dockerfile...${NC}"
-# Replacing the problematic base image with eclipse-temurin
-sed -i 's/^FROM openjdk:21-jdk-slim/FROM eclipse-temurin:21-jdk-jammy/' Dockerfile
-echo "Dockerfile patched successfully."
-
 # 6. Build and Run Container
-echo -e "${GREEN}[5/6] Building and Starting Container (This may take 5-10 minutes)...${NC}"
+echo -e "${GREEN}[4/5] Building and Starting Container (This may take 5-10 minutes)...${NC}"
 # Check for docker compose v2 or legacy docker-compose v1
 if docker compose version &> /dev/null; then
     docker compose up -d --build android-emulator
@@ -75,7 +69,7 @@ else
 fi
 
 # 7. Final Check and Output Info
-echo -e "${GREEN}[6/6] Checking status...${NC}"
+echo -e "${GREEN}[5/5] Checking status...${NC}"
 sleep 5 # Wait a moment for container initialization
 
 if docker ps | grep -q "android-emulator"; then
